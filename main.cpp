@@ -1,4 +1,4 @@
-﻿//отче наш, помоги мне сдать ещё одну лабу по аисд пж пж пж
+﻿//ОНО РАБОТААААЕТ
 #include <stdio.h>
 #include <iostream>
 #include <complex>
@@ -32,20 +32,9 @@ public:
             count = 1;
         }
     }
-    ~Equalization() {
-        count = 0;
-        head.clear();
-    }
-    Equalization(Equalization<T>& other)
-    {
-        this->count = other.count;
-        auto it = other.cbegin();
-        for (it; it != other.cend(); it++)
-        {
-            Coefficent pointer(it->coefficent, it->degree);
-            this->head.push_front(pointer);
-        }
-    }
+    Equalization() = default;
+    ~Equalization() = default;
+    Equalization(Equalization<T>& other) = default;
     bool DetectOldDegree(T coefficent, double degree)
     {
 
@@ -258,6 +247,19 @@ public:
     auto cbegin()  const { return head.begin(); }
 
     auto cend()  const { return head.end(); }
+    bool detect_coefficent_0() {
+        auto FunctionHead = cbegin();
+        while (FunctionHead != cend())
+        {
+            if (FunctionHead->coefficent == T(0))
+            {
+                DeleteElement(FunctionHead->degree);
+                    return true;
+            }
+            FunctionHead++;
+        }
+        return false;
+    }
 };
 
 
@@ -286,20 +288,9 @@ public:
             count = 1;
         }
     }
-    ~Equalization() {
-        count = 0;
-        head.clear();
-    }
-    Equalization(Equalization<complex<T>>& other)
-    {
-        this->count = other.count;
-        auto it = other.cbegin();
-        for (it; it != other.cend(); it++)
-        {
-            Coefficent pointer(it->coefficent, it->degree);
-            this->head.push_front(pointer);
-        }
-    }
+    Equalization() = default;
+    ~Equalization() = default;
+    Equalization(Equalization<complex<T>>& other) = default;
     bool DetectOldDegree(complex<T> coefficent, double degree)
     {
 
@@ -514,6 +505,20 @@ public:
     auto cbegin()  const { return head.begin(); }
 
     auto cend()  const { return head.end(); }
+    bool detect_coefficent_0()
+    {
+        auto FunctionHead = cbegin();
+        while (FunctionHead != cend())
+        {
+            if (real(FunctionHead->coefficent) == T(0) && imag(FunctionHead->coefficent) == T(0))
+            {
+                DeleteElement(FunctionHead->degree);
+                    return true;
+            }
+            FunctionHead++;
+        }
+        return false;
+    }
 };
 
 class EClassException
@@ -534,6 +539,7 @@ public:
 template<typename T>
 ostream& operator<<(ostream& os, Equalization<T> Obj)
 {
+    while (Obj.detect_coefficent_0()) Obj.detect_coefficent_0();
     for (auto i = Obj.cbegin(); i != Obj.cend(); i++) {
     
         cout << "\n" << i->coefficent;
